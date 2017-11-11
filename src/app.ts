@@ -1,11 +1,17 @@
 import * as express from 'express'
 import * as configManager from './config'
+// import * as playground from './playground'
+import * as routes from './routes'
 
-console.log('test')
-
+// playground.init()
 let app = express()
+configManager.initialize()
+const PORT = configManager.getConfig('app.port') || process.env.GND_PORT || '3000'
 
-const PORT = configManager.getConfig('app.port') || '3000'
+let router =  routes.initialize()
+
+app.use('/', routes.requestLoggingMW(console.log))
+app.use('/', router)
 
 app.listen(PORT, (err: Error) => {
     if (err)

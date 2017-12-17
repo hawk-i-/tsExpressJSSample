@@ -1,28 +1,28 @@
-import * as express from 'express'
-import * as fs from 'fs'
-import * as path from 'path'
-import * as _ from 'lodash'
+import * as express from 'express';
+import * as fs from 'fs';
+import * as path from 'path';
+import * as _ from 'lodash';
 
 export const requestLoggingMW = (logger) => {
-    return (req: express.Request, res: express.Response, next) => {
+    return (req: express.Request, res: express.Response, next: express.NextFunction) => {
         logger(JSON.stringify(_.pick(req, [ 
             'path',
             'protocol',
             'method'
-        ])))
+        ])));
 
-        next()
-    }
-}
+        next();
+    };
+};
 
 export const initialize = (): express.Router => {
-    let router = express.Router()
+    let router = express.Router();
     
     for (let file of fs.readdirSync(__dirname)) {
-        let filePath = path.join(__dirname, file)
+        let filePath = path.join(__dirname, file);
     if (__filename !== filePath && fs.statSync(filePath).isFile() && /.*\.(js|ts)$/.test(file))
-        require(`./${file}`).init(router)
-    }
+        require(`./${file}`).init(router);
+    };
 
-    return router
-}
+    return router;
+};
